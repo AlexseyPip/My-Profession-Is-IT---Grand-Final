@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "ru.uchidobro.twa",
+        "sha256_cert_fingerprints": ["89:C4:FD:EC:B5:6A:45:EA:9B:00:E9:D6:44:1A:5B:E5:5F:FF:2A:4B:97:AC:6B:05:BE:DE:CE:84:C2:E6:06:C4"]
+      }
+    }]

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Нет соединения — УчиДобро</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* основная карточка — центр */
+        .offline-container {
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 64px;
+            padding: 2.2rem 1.8rem 2.8rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.1), 0 2px 10px rgba(0, 0, 0, 0.02);
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(0px);
+        }
+
+        /* БЛОБ (клякса) — фоновая, неправильная форма №3 (органичная, с 3-4 выступами) */
+        .blob-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .blob-shape {
+            position: absolute;
+            background: #3b82f6;
+            background: radial-gradient(circle at 30% 40%, #60a5fa, #2563eb);
+            opacity: 0.28;
+            filter: blur(48px);
+            border-radius: 62% 38% 72% 28% / 46% 54% 46% 54%;
+            width: 85vw;
+            height: 85vw;
+            max-width: 700px;
+            max-height: 700px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(15deg);
+            animation: blobFloat 18s infinite ease-in-out;
+        }
+
+        /* вторая клякса для объёма, более мелкая, другая форма */
+        .blob-shape-2 {
+            position: absolute;
+            background: #4f9eff;
+            background: radial-gradient(circle at 70% 30%, #7eb6ff, #2b6ed7);
+            opacity: 0.2;
+            filter: blur(60px);
+            border-radius: 74% 26% 67% 33% / 39% 61% 39% 61%;
+            width: 65vw;
+            height: 65vw;
+            max-width: 550px;
+            max-height: 550px;
+            bottom: -10%;
+            right: -15%;
+            top: auto;
+            left: auto;
+            transform: rotate(25deg);
+            animation: blobFloat2 22s infinite alternate;
+        }
+
+        /* третья клякса с другим оттенком, для мягкого перехода */
+        .blob-shape-3 {
+            position: absolute;
+            background: #1e6fdf;
+            opacity: 0.18;
+            filter: blur(55px);
+            border-radius: 47% 53% 31% 69% / 58% 42% 58% 42%;
+            width: 70vw;
+            height: 70vw;
+            max-width: 600px;
+            max-height: 600px;
+            top: -5%;
+            left: -20%;
+            transform: rotate(45deg);
+            animation: blobFloat3 25s infinite ease;
+        }
+
+        @keyframes blobFloat {
+            0% {
+                border-radius: 62% 38% 72% 28% / 46% 54% 46% 54%;
+                transform: translate(-50%, -50%) rotate(15deg) scale(1);
+            }
+            50% {
+                border-radius: 48% 52% 35% 65% / 63% 37% 63% 37%;
+                transform: translate(-50%, -50%) rotate(25deg) scale(1.05);
+            }
+            100% {
+                border-radius: 62% 38% 72% 28% / 46% 54% 46% 54%;
+                transform: translate(-50%, -50%) rotate(15deg) scale(1);
+            }
+        }
+
+        @keyframes blobFloat2 {
+            0% {
+                border-radius: 74% 26% 67% 33% / 39% 61% 39% 61%;
+                transform: rotate(25deg) scale(1);
+            }
+            100% {
+                border-radius: 59% 41% 54% 46% / 47% 53% 47% 53%;
+                transform: rotate(40deg) scale(1.08);
+            }
+        }
+
+        @keyframes blobFloat3 {
+            0% {
+                border-radius: 47% 53% 31% 69% / 58% 42% 58% 42%;
+                transform: rotate(45deg) scale(1);
+            }
+            100% {
+                border-radius: 65% 35% 73% 27% / 36% 64% 36% 64%;
+                transform: rotate(60deg) scale(1.12);
+            }
+        }
+
+        /* область с изображением */
+        .hero {
+            position: relative;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .offline-art {
+            width: 190px;
+            height: auto;
+            display: block;
+            position: relative;
+            z-index: 5;
+            filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.05));
+            transition: transform 0.2s ease;
+        }
+
+        /* главный голубой текст */
+        .main-title {
+            font-size: 1.9rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #1e7be0, #0f4c9e);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.6rem;
+            line-height: 1.25;
+        }
+
+        /* короткое уточнение — минимальное, не про проверку */
+        .subtle-hint {
+            font-size: 0.85rem;
+            color: #5c6f91;
+            margin-bottom: 2rem;
+            font-weight: 440;
+            letter-spacing: -0.2px;
+        }
+
+        /* КНОПКА: белая, чёрный текст, тёмная обводка */
+        .reload-btn {
+            background: #ffffff;
+            color: #0a0c12;
+            border: 1.8px solid #1f2a44;
+            padding: 0.85rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 100px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            width: auto;
+            min-width: 190px;
+            backdrop-filter: blur(2px);
+        }
+
+        .reload-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 22px -10px rgba(0, 0, 0, 0.15);
+            background: #fefefe;
+            border-color: #111827;
+        }
+
+        .reload-btn:active {
+            transform: translateY(1px);
+            transition: 0.05s;
+        }
+
+        .reload-icon {
+            display: inline-block;
+            font-size: 1.1rem;
+            transition: transform 0.35s ease;
+        }
+
+        .reload-btn:hover .reload-icon {
+            transform: rotate(360deg);
+        }
+
+        /* адаптивность */
+        @media (max-width: 520px) {
+            .offline-container {
+                padding: 1.8rem 1.2rem 2.2rem;
+                border-radius: 48px;
+            }
+            .main-title {
+                font-size: 1.6rem;
+            }
+            .offline-art {
+                width: 155px;
+            }
+            .reload-btn {
+                min-width: 160px;
+                padding: 0.7rem 1.5rem;
+            }
+            .blob-shape, .blob-shape-2, .blob-shape-3 {
+                opacity: 0.24;
+            }
+        }
+
+        /* входная анимация контейнера */
+        .offline-container {
+            animation: fadeSlideUp 0.55s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+        }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* без лишних текстов, только суть */
+        .no-cache-section {
+            display: none;
+        }
+
+        /* крошечная подпись для PWA-эстетики (не отвлекает) */
+        .pwa-badge {
+            margin-top: 2rem;
+            font-size: 0.7rem;
+            color: #8a99b6;
+            opacity: 0.6;
+            letter-spacing: 0.2px;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+    <!-- Фоновые кляксы: три разные органические формы (blob shape №3, №2, №1) -->
+    <div class="blob-background">
+        <div class="blob-shape"></div>
+        <div class="blob-shape-2"></div>
+        <div class="blob-shape-3"></div>
+    </div>
+
+    <div class="offline-container">
+        <div class="hero">
+            <!-- Новая картинка: качественная SVG/PNG иллюстрация "Offline / отключение Wi-Fi", не смайлик.
+                 Используем стильный ресурс с удобной тематикой обучения/связи. Ссылка надёжная, можно скачать 
+                 и заменить при желании, но изображение соответствует PWA-офлайн странице.
+                 Если нужна конкретная картинка, я дал красивый URL с планетой/роутером — для "УчиДобро" образовательная стилистика -->
+            <img class="offline-art" 
+                 src="https://cdn-icons-png.flaticon.com/512/1753/1753751.png" 
+                 alt="Нет интернет-соединения"
+                 loading="eager"
+                 onerror="this.src='https://cdn-icons-png.flaticon.com/512/3996/3996750.png'; this.onerror=null;">
+        </div>
+
+        <!-- Голубой текст "Отсутствует интернет соединение" (без доп. проверок) -->
+        <h1 class="main-title">Отсутствует интернет соединение</h1>
+        <div class="subtle-hint">🌐 Пожалуйста, проверьте подключение</div>
+
+        <!-- Кнопка обновить (белая, чёрный текст, тёмная обводка) -->
+        <button class="reload-btn" id="pwa-reload-button">
+            <span class="reload-icon">⟳</span>
+            <span>Обновить</span>
+        </button>
+
+        <!-- минимальный элемент для PWA (без кэшированных задач) -->
+        <div class="pwa-badge">
+            УчиДобро • офлайн-режим
+        </div>
+    </div>
+
+    <script>
+        // PWA-совместимая логика: кнопка перезагрузки с плавным поведением
+        const reloadButton = document.getElementById('pwa-reload-button');
+        if (reloadButton) {
+            reloadButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                // микро-отклик (тактильный)
+                reloadButton.style.transform = 'scale(0.96)';
+                setTimeout(() => {
+                    reloadButton.style.transform = '';
+                    // перезагрузка страницы — стандартное поведение для PWA offline-страницы
+                    window.location.reload();
+                }, 100);
+            });
+        }
+
+        // Слушатель события "online" — автоматическая перезагрузка когда интернет вернётся
+        window.addEventListener('online', () => {
+            // небольшая задержка, чтобы сеть стабилизировалась и PWA мог переподключиться
+            setTimeout(() => {
+                if (navigator.onLine) {
+                    // Если страница отображается как offline-fallback и соединение восстановлено,
+                    // обновляем страницу для загрузки актуального контента
+                    window.location.reload();
+                }
+            }, 400);
+        });
+
+        // Дополнительно: удаляем любые возможные упоминания о кэшированных задачах из DOM (на всякий случай)
+        // (в вёрстке их нет, но если вдруг где-то всплывут — чисто)
+        const removeAnyCacheRefs = () => {
+            const possibleCacheElements = document.querySelectorAll('.cached-tasks, .cached-info, .tasks-list, [data-cache]');
+            possibleCacheElements.forEach(el => el.remove());
+        };
+        removeAnyCacheRefs();
+
+        // Хороший тон: если офлайн-страница загружена из кэша Service Worker,
+        // добавляем атрибут для аналитики (необязательно)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(registration => {
+                // просто метка, что страница находится в режиме fallback
+                console.log('PWA offline fallback — УчиДобро');
+            }).catch(() => {});
+        }
+
+        // элегантная обработка ошибок изображения (запасной вариант с красивой векторной иконкой)
+        const offlineImg = document.querySelector('.offline-art');
+        if (offlineImg) {
+            const fallbackImages = [
+                'https://cdn-icons-png.flaticon.com/512/3996/3996750.png',
+                'https://cdn-icons-png.flaticon.com/512/1792/1792789.png',
+                'https://cdn-icons-png.flaticon.com/512/3917/3917756.png'
+            ];
+            let fallbackIndex = 0;
+            offlineImg.addEventListener('error', function onImgError() {
+                if (fallbackIndex < fallbackImages.length) {
+                    this.src = fallbackImages[fallbackIndex];
+                    fallbackIndex++;
+                } else {
+                    // последний резерв — встроенный минимальный SVG (символ сети)
+                    this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"%3E%3Cpath fill="%234280b6" d="M60 20 L60 20 M30 55 L90 55 M42 35 L78 35 M24 75 L96 75 M48 95 L72 95" stroke="%23356b9e" stroke-width="4" fill="none" stroke-linecap="round"/%3E%3Ccircle cx="60" cy="85" r="4" fill="%23265a8c"/%3E%3C/svg%3E';
+                }
+            });
+        }
+
+        // производим дополнительный ресет для отсутствия лишних сообщений про задачи
+        const extraClean = () => {
+            const bodyEl = document.body;
+            const anyTaskWrappers = bodyEl.querySelectorAll('[class*="task"], [class*="cached"], [class*="кэш"]');
+            anyTaskWrappers.forEach(wrapper => {
+                if (wrapper.innerText && (wrapper.innerText.includes('задача') || wrapper.innerText.includes('кэш') || wrapper.innerText.includes('сохранён'))) {
+                    if (!wrapper.closest('.pwa-badge') && !wrapper.closest('.reload-btn') && !wrapper.closest('.main-title')) {
+                        wrapper.style.display = 'none';
+                    }
+                }
+            });
+        };
+        extraClean();
+
+        // глобальный стиль: убеждаемся, что фон кляксы действительно формы blob (3 разные формы)
+        // и нет никаких овалов, только органические фигуры как просили
+        document.documentElement.style.setProperty('--blob-filter', 'blur(48px)');
+        // встроим легкую дополнительную кастомную анимацию для более мягкого движения
+        const style = document.createElement('style');
+        style.textContent = `
+            /* гарантия, что кляксы именно неправильной формы №3 и никаких овалов */
+            .blob-shape, .blob-shape-2, .blob-shape-3 {
+                border-radius: 67% 33% 58% 42% / 44% 56% 44% 56%;
+                will-change: transform, border-radius;
+            }
+            .blob-shape-2 {
+                border-radius: 82% 18% 71% 29% / 47% 63% 37% 53%;
+            }
+            .blob-shape-3 {
+                border-radius: 35% 65% 42% 58% / 68% 32% 68% 32%;
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .blob-shape, .blob-shape-2, .blob-shape-3 {
+                    animation: none;
+                    opacity: 0.2;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

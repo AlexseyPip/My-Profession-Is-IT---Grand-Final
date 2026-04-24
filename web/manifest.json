@@ -1,0 +1,119 @@
+{
+    "name": "УчиДобро - Трекер задач",
+    "short_name": "УчиДобро",
+    "description": "Умный трекер задач для учеников. Никогда не забывай о домашних заданиях!",
+    "id": "/",
+    "start_url": "/?utm_source=pwa",
+    "display": "standalone",
+    "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+    "theme_color": "#4361ee",
+    "background_color": "#4361ee",
+    "orientation": "portrait",
+    "scope": "/",
+    "categories": ["education", "productivity"],
+    "lang": "ru",
+    "dir": "ltr",
+    
+    "icons": [
+      {
+        "src": "/img/android/launchericon-48x48.png",
+        "sizes": "48x48",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/img/android/launchericon-72x72.png",
+        "sizes": "72x72",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/img/android/launchericon-96x96.png",
+        "sizes": "96x96",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/img/android/launchericon-144x144.png",
+        "sizes": "144x144",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/img/android/launchericon-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/img/android/launchericon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any maskable"
+      }
+    ],
+  
+    "screenshots": [
+      {
+        "src": "/img/screenshot1.png",
+        "sizes": "1080x1920",
+        "type": "image/png",
+        "form_factor": "narrow",
+        "label": "Главный экран УчиДобро"
+      }
+    ],
+  
+    "shortcuts": [
+      {
+        "name": "Мои задачи",
+        "short_name": "Задачи",
+        "description": "Просмотр всех задач",
+        "url": "/tasks.php",
+        "icons": [
+          {
+            "src": "/img/android/launchericon-96x96.png",
+            "sizes": "96x96"
+          }
+        ]
+      },
+      {
+        "name": "Новая задача",
+        "short_name": "Добавить",
+        "description": "Создать новую задачу",
+        "url": "/add_task.php",
+        "icons": [
+          {
+            "src": "/img/android/launchericon-96x96.png",
+            "sizes": "96x96"
+          }
+        ]
+      },
+      {
+        "name": "Профиль",
+        "short_name": "Профиль",
+        "url": "/profile.php",
+        "icons": [
+          {
+            "src": "/img/android/launchericon-96x96.png",
+            "sizes": "96x96"
+          }
+        ]
+      }
+    ],
+  
+    "related_applications": [],
+    "prefer_related_applications": false,
+  
+    "share_target": {
+      "action": "/add_task.php",
+      "method": "GET",
+      "params": {
+        "title": "title",
+        "text": "description"
+      }
+    },
+  
+    "edge_side_panel": {
+      "preferred_width": 400
+    }
+  }
